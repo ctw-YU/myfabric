@@ -1,0 +1,181 @@
+Organizations:
+  - &oorg1
+    Name: oorg1    #给定节点的名称
+    ID: oorg1MSP    #即将加载的自定义MSPID
+    MSPDir: crypto-config/ordererOrganizations/oorg1.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        # 背书策略可以是AND,OR,OutOf
+        # 有四种角色:member,admin,peer,client
+        Rule: "OR('oorg1MSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('oorg1MSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('oorg1MSP.admin')"
+  - &org1
+    Name: org1
+    ID: org1MSP
+    MSPDir: crypto-config/peerOrganizations/org1.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('org1MSP.admin','org1MSP.peer','org1MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('org1MSP.admin','org1MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('org1MSP.admin')"
+    #定义了节点可用于跨组织的数据传播或同步,且值只能在应用程序部分的上下文中被编码
+    AnchorPeers:
+      - Host: peer0.org1.com
+        Port: 7051
+  - &org2
+    Name: org2
+    ID: org2MSP
+    MSPDir: crypto-config/peerOrganizations/org2.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('org2MSP.admin','org2MSP.peer','org2MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('org2MSP.admin','org2MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('org2MSP.admin')"
+    #定义了节点可用于跨组织的数据传播或同步,且值只能在应用程序部分的上下文中被编码
+    AnchorPeers:
+      - Host: peer0.org2.com
+        Port: 9051
+  - &org3
+    Name: org3
+    ID: org3MSP
+    MSPDir: crypto-config/peerOrganizations/org3.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('org3MSP.admin','org3MSP.peer','org3MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('org3MSP.admin','org3MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('org3MSP.admin')"
+    #定义了节点可用于跨组织的数据传播或同步,且值只能在应用程序部分的上下文中被编码
+    AnchorPeers:
+      - Host: peer0.org3.com
+        Port: 11051
+
+Orderer: &OrdererDefaults
+  #排序节点类型用来指定要启动的排序节点实现,不同的实现对应不同的共识算法
+  # 目前可用:solo,kafka,EtcdRaft
+  OrdererType: solo
+  Addresses:
+    - ord1.oorg1.com:7050
+  #区块打包的最大超时时间(到了该时间就打包区块)
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10    #一个区块里的最大交易数
+    AbsoluteMaxBytes: 99 MB  # 一个区块的最大字节数
+    PreferredMaxBytes: 512 KB  #如果一个交易>这个,就会被放入另外一个更大的区块中
+  Organizations:      ## 参与维护Orderer的组织,默认为空
+    Policies:
+      Readers:
+        Type: ImplicitMeta
+        Rule: "ANY Readers"
+      Writers:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+      Admins:
+        Type: ImplicitMeta
+        Rule: "MAJORITY Admins"
+      BlockValidation:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+
+#Capabilities:用户定义Fabric网络的功能和特性
+#Capabilities是fabric1.1后出的配置,定义fabric network的功能
+#这是v1.1.0的一个新概念，不应该在带有v1.0.x版本orderers和peers的混合网络中使用
+#定义了fabric二进制文件必须提供的特性,较老的二进制文件必须升级以正常使用
+Capabilities:
+  Channel: &ChannelCapabilities
+    V1_4_3: true
+    V1_3: false
+    V1_1: false
+  Orderer: &OrdererCapabilities
+    V1_4_2: true
+    V1_1: false
+  Application: &ApplicationCapabilities
+    V1_4: true
+    V1_3: false
+    V1_2: false
+    V1_1: false
+
+Application: &ApplicationDefaults
+  #列出参与到网络的机构清单,默认为空??
+  Organizations:
+  #定义本层级的应用控制策略,其权威路径为/Channel/Application/<PolicyName>
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    #Writers定义了调用Broadcast API提交交易的许可规则
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    #Admin策略定义了修改本层级配置的许可规则
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+#Profiles:用来定义configtxgen工具的入口
+Profiles:
+  #用来生成orderer启动时需要的block,用于生成创世区块,名字可以任意
+  #需要包含Orderer和Consortiums两部分
+  Genesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *oorg1
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      #联盟为默认的SampleConsortium,添加了一个组织,表示orderer所服务的联盟列表
+      SampleConsortium:
+        Organizations:
+          - *org1
+          - *org2
+  #用来生成channel配置信息,名字可以任意
+  #需要包含Consortium和Application两部分
+  Channel:
+    Consortium: SampleConsortium        #通道关联的联盟名称
+    <<: *ChannelDefaults                ##通道为默认配置
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *org1
+        - *org2
+        - *org3
+      Capabilities:
+        <<: *ApplicationCapabilities

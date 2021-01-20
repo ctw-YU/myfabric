@@ -1,0 +1,3 @@
+# myfab
+.\main.go:118:5: undefined: err
+.\main.go:119:15: undefined: err

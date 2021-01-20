@@ -1,0 +1,244 @@
+name: "myfab_net"
+
+version: 1.0.0
+
+client:
+  organization: org3
+  logging:
+    level: info
+  cryptoconfig:
+    path: ${GOPATH}/src/myfabric/fabric/crypto-config
+  credentialStore:
+    path: fabric/tmp/org3.com-store
+    cryptoStore:
+      path: fabric/tmp/org3.com-msp
+  BCCSP:
+    security:
+      enabled: true
+      default:
+        provider: "SW"
+      hashAlgorithm: "SHA2"
+      softVerify: true
+      level: 256
+  tlsCerts:
+    systemCertPool: false
+    client:
+      keyfile:
+      certfile:
+channels:
+  ch1:
+    peers:
+      peer0.org1.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.org1.com:
+      peer0.org2.com:
+      peer1.org2.com:
+      peer0.org3.com:
+      peer1.org3.com:
+    policies:
+      queryChannelConfig:
+        minResponses: 1
+        maxTargets: 1
+        retryOpts:
+          attempts: 5
+          initialBackoff: 500ms
+          maxBackoff: 5s
+          backoffFactor: 2.0
+organizations:
+  org1:
+    mspid: org1MSP
+    cryptoPath: peerOrganizations/org1.com/users/{userName}@org1.com/msp
+    peers:
+      - peer0.org1.com
+      - peer1.org1.com
+    certificateAuthorities:
+      - ca1.org1.com
+  org2:
+    mspid: org2MSP
+    cryptoPath: peerOrganizations/org2.com/users/{userName}@org2.com/msp
+    peers:
+      - peer0.org2.com
+      - peer1.org2.com
+    certificateAuthorities:
+      - ca1.org2.com
+  org3:
+    mspid: org3MSP
+    cryptoPath: peerOrganizations/org3.com/users/{userName}@org3.com/msp
+    peers:
+      - peer0.org3.com
+      - peer1.org3.com
+    certificateAuthorities:
+      - ca1.org3.com
+orderers:
+  ord1.oorg1.com:
+    url: localhost:7050
+    grpcOptions:
+      ssl-target-name-override: ord1.oorg1.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/ordererOrganizations/oorg1.com/tlsca/tlsca.oorg1.com-cert.pem
+peers:
+  peer0.org1.com:
+    url: localhost:7051
+    eventUrl: localhost:7053
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org1.com/tlsca/tlsca.org1.com-cert.pem
+  peer1.org1.com:
+    url: localhost:8051
+    eventUrl: localhost:8053
+    grpcOptions:
+      ssl-target-name-override: peer1.org1.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org1.com/tlsca/tlsca.org1.com-cert.pem
+  peer0.org2.com:
+    url: localhost:9051
+    eventUrl: localhost:9053
+    grpcOptions:
+      ssl-target-name-override: peer0.org2.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org2.com/tlsca/tlsca.org2.com-cert.pem
+  peer1.org2.com:
+    url: localhost:10051
+    eventUrl: localhost:10053
+    grpcOptions:
+      ssl-target-name-override: peer1.org2.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org2.com/tlsca/tlsca.org2.com-cert.pem
+  peer0.org3.com:
+    url: localhost:11051
+    eventUrl: localhost:11053
+    grpcOptions:
+      ssl-target-name-override: peer0.org3.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org3.com/tlsca/tlsca.org3.com-cert.pem
+  peer1.org3.com:
+    url: localhost:12051
+    eventUrl: localhost:12053
+    grpcOptions:
+      ssl-target-name-override: peer1.org3.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org3.com/tlsca/tlsca.org3.com-cert.pem
+certificateAuthorities:
+  ca1.org1.com:
+    url: http://localhost:7054
+    httpOptions:
+      verify: false
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+    caName: ca1.org1.com
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org1.com/ca/ca.org1.com-cert.pem
+  ca1.org2.com:
+    url: http://localhost:8054
+    httpOptions:
+      verify: false
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+    caName: ca1.org2.com
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org2.com/ca/ca.org2.com-cert.pem
+  ca1.org3.com:
+    url: http://localhost:9054
+    httpOptions:
+      verify: false
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+    caName: ca1.org3.com
+    tlsCACerts:
+      path: ${GOPATH}/src/myfabric/fabric/crypto-config/peerOrganizations/org3.com/ca/ca.org3.com-cert.pem
+entityMatchers:
+  peer:
+    - pattern: (\w*)peer0.org1.com(\w*)
+      urlSubstitutionExp: localhost:7051
+      eventUrlSubstitutionExp: localhost:7053
+      sslTargetOverrideUrlSubstitutionExp: peer0.org1.com
+      mappedHost: peer0.org1.com
+
+    - pattern: (\w*)peer1.org1.com(\w*)
+      urlSubstitutionExp: localhost:8051
+      eventUrlSubstitutionExp: localhost:8053
+      sslTargetOverrideUrlSubstitutionExp: peer1.org1.com
+      mappedHost: peer1.org1.com
+
+    - pattern: (\w*)peer0.org2.com(\w*)
+      urlSubstitutionExp: localhost:9051
+      eventUrlSubstitutionExp: localhost:9053
+      sslTargetOverrideUrlSubstitutionExp: peer0.org2.com
+      mappedHost: peer0.org2.com
+
+    - pattern: (\w*)peer1.org2.com(\w*)
+      urlSubstitutionExp: localhost:10051
+      eventUrlSubstitutionExp: localhost:10053
+      sslTargetOverrideUrlSubstitutionExp: peer1.org2.com
+      mappedHost: peer1.org2.com
+
+    - pattern: (\w*)peer0.org3.com(\w*)
+      urlSubstitutionExp: localhost:11051
+      eventUrlSubstitutionExp: localhost:11053
+      sslTargetOverrideUrlSubstitutionExp: peer0.org3.com
+      mappedHost: peer0.org3.com
+
+    - pattern: (\w*)peer1.org3.com(\w*)
+      urlSubstitutionExp: localhost:12051
+      eventUrlSubstitutionExp: localhost:12053
+      sslTargetOverrideUrlSubstitutionExp: peer1.org3.com
+      mappedHost: peer1.org3.com
+  orderer:
+    - pattern: (\w*)ord1.oorg1.com(\w*)
+      urlSubstitutionExp: localhost:7050
+      sslTargetOverrideUrlSubstitutionExp: ord1.oorg1.com
+      mappedHost: ord1.oorg1.com
+
+  certificateAuthorities:
+    - pattern: (\w*)ca1.org1.com(\w*)
+      urlSubstitutionExp: http://localhost:7054
+      mappedHost: ca1.org1.com
+    - pattern: (\w*)ca1.org2.com(\w*)
+      urlSubstitutionExp: http://localhost:8054
+      mappedHost: ca1.org2.com
+    - pattern: (\w*)ca1.org3.com(\w*)
+      urlSubstitutionExp: http://localhost:9054
+      mappedHost: ca1.org3.com
+

@@ -1,0 +1,44 @@
+=============== Dec 15, 2020 (UTC) ===============
+06:23:06.350211 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+06:23:06.359715 db@open opening
+06:23:06.360155 version@stat F·[] S·0B[] Sc·[]
+06:23:06.365386 db@janitor F·2 G·0
+06:23:06.365406 db@open done T·5.682046ms
+=============== Dec 15, 2020 (UTC) ===============
+06:28:49.072110 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+06:28:49.072191 version@stat F·[] S·0B[] Sc·[]
+06:28:49.072199 db@open opening
+06:28:49.072231 journal@recovery F·1
+06:28:49.072790 journal@recovery recovering @1
+06:28:49.078757 memdb@flush created L0@2 N·6 S·182B "ch1\x00\x00,v6":"ch1..\x01\x01\x00,v2"
+06:28:49.079129 version@stat F·[1] S·182B[182B] Sc·[0.25]
+06:28:49.100644 db@janitor F·3 G·0
+06:28:49.100662 db@open done T·28.457158ms
+=============== Dec 25, 2020 (UTC) ===============
+02:36:57.128971 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+02:36:57.129435 version@stat F·[1] S·182B[182B] Sc·[0.25]
+02:36:57.129445 db@open opening
+02:36:57.129487 journal@recovery F·1
+02:36:57.129731 journal@recovery recovering @3
+02:36:57.130625 version@stat F·[1] S·182B[182B] Sc·[0.25]
+02:36:57.148283 db@janitor F·3 G·0
+02:36:57.148301 db@open done T·18.851239ms
+=============== Dec 25, 2020 (UTC) ===============
+03:14:32.300189 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+03:14:32.300283 version@stat F·[1] S·182B[182B] Sc·[0.25]
+03:14:32.300289 db@open opening
+03:14:32.300328 journal@recovery F·1
+03:14:32.300652 journal@recovery recovering @5
+03:14:32.301191 version@stat F·[1] S·182B[182B] Sc·[0.25]
+03:14:32.316968 db@janitor F·3 G·0
+03:14:32.316993 db@open done T·16.700377ms
+=============== Dec 25, 2020 (UTC) ===============
+04:03:25.453121 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+04:03:25.453222 version@stat F·[1] S·182B[182B] Sc·[0.25]
+04:03:25.453229 db@open opening
+04:03:25.453264 journal@recovery F·1
+04:03:25.453961 journal@recovery recovering @7
+04:03:25.459281 memdb@flush created L0@9 N·2 S·148B "ch1\x00\x00,v9":"ch1..\x01\x05\x00,v8"
+04:03:25.459884 version@stat F·[2] S·330B[330B] Sc·[0.50]
+04:03:25.479903 db@janitor F·4 G·0
+04:03:25.479920 db@open done T·26.687089ms
